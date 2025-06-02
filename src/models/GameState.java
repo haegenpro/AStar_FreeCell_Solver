@@ -2,15 +2,14 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 public class GameState {
-    // 8 Tableau Piles
+    
     private List<Stack<Card>> tableauPiles;
-    // 4 Free Cells
     private List<Card> freeCells;
-    // 4 Home Cells (one for each suit, stores the next expected card for that suit)
-    private List<Stack<Card>> homeCells; // Each stack holds cards of a specific suit, built up from Ace to King
+    private List<Stack<Card>> homeCells;
 
     public GameState() {
         tableauPiles = new ArrayList<>(8);
@@ -94,5 +93,76 @@ public class GameState {
             }
         }
         return count;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameState other = (GameState) o;
+
+        if (this.tableauPiles.size() != other.tableauPiles.size()) return false;
+        for (int i = 0; i < this.tableauPiles.size(); i++) {
+            if (!stackEquals(this.tableauPiles.get(i), other.tableauPiles.get(i))) {
+                return false;
+            }
+        }
+
+        if (this.freeCells.size() != other.freeCells.size()) return false;
+        for (int i = 0; i < this.freeCells.size(); i++) {
+            Card thisCard = this.freeCells.get(i);
+            Card otherCard = other.freeCells.get(i);
+            if (!Objects.equals(thisCard, otherCard)) {
+                return false;
+            }
+        }
+
+        if (this.homeCells.size() != other.homeCells.size()) return false;
+        for (int i = 0; i < this.homeCells.size(); i++) {
+            if (!stackEquals(this.homeCells.get(i), other.homeCells.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean stackEquals(Stack<Card> s1, Stack<Card> s2) {
+        if (s1.size() != s2.size()) return false;
+        for (int i = 0; i < s1.size(); i++) {
+            if (!Objects.equals(s1.get(i), s2.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int hashCode() {
+        return Objects.hash(
+            deepListHashCode(tableauPiles),
+            deepListHashCode(freeCells),
+            deepListHashCode(homeCells)
+        );
+    }
+
+    private int deepListHashCode(List<?> list) {
+        int result = 1;
+        for (Object element : list) {
+            if (element instanceof Stack<?>) {
+                @SuppressWarnings("unchecked")
+                Stack<Card> stack = (Stack<Card>) element;
+                result = 31 * result + deepStackHashCode(stack);
+            } else {
+                result = 31 * result + Objects.hashCode(element);
+            }
+        }
+        return result;
+    }
+
+    private int deepStackHashCode(Stack<Card> stack) {
+        int result = 1;
+        for (Card card : stack) {
+            result = 31 * result + Objects.hashCode(card);
+        }
+        return result;
     }
 }
