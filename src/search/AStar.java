@@ -63,7 +63,7 @@ public class AStar {
         System.out.println("No solution found.");
         System.out.println("Nodes visited: " + visitedNodes);
         System.out.println("Time taken: " + (System.currentTimeMillis() - startTime) + " ms");
-        return null; // No solution found
+        return null;
     }
 
     private boolean isGoalState(GameState state) {
@@ -71,7 +71,7 @@ public class AStar {
         for (Stack<Card> homePile : state.getHomeCells()) { //
             cardsInHomeCells += homePile.size();
         }
-        return cardsInHomeCells == 52; // All 52 cards must be in home cells
+        return cardsInHomeCells == 52;
     }
 
     private List<Node> getSuccessors(Node currentNode) {
@@ -144,7 +144,6 @@ public class AStar {
                 for (int toPile = 0; toPile < 8; toPile++) {
                     if (fromPile == toPile) continue;
 
-                    // Try moving a single card first
                     if (Rules.canMoveTableauToTableau(currentState, fromPile, toPile)) { //
                         GameState newState = currentState.deepCopy(); //
                         Card cardToMove = newState.getTableauPiles().get(fromPile).pop(); //
@@ -153,10 +152,8 @@ public class AStar {
                         successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1)); //
                     }
 
-                    // Try moving multiple cards (supermove)
                     int maxMovable = Rules.getMaxMovableCards(currentState); //
-                    Stack<Card> sourcePile = currentState.getTableauPiles().get(fromPile); //
-                    // Iterate from maxMovable down to 2 (single card handled above)
+                    Stack<Card> sourcePile = currentState.getTableauPiles().get(fromPile);
                     for (int numCards = Math.min(maxMovable, sourcePile.size()); numCards >= 2; numCards--) {
                         if (Rules.canMoveMultipleTableauCards(currentState, fromPile, toPile, numCards)) { //
                             GameState newState = currentState.deepCopy(); //
@@ -165,7 +162,7 @@ public class AStar {
 
                             List<Card> cardsToMove = new ArrayList<>();
                             for (int i = 0; i < numCards; i++) {
-                                cardsToMove.add(0, newSourcePile.pop()); // Pop and add to front to maintain order
+                                cardsToMove.add(0, newSourcePile.pop());
                             }
                             for (Card card : cardsToMove) {
                                 newDestPile.push(card);
@@ -204,7 +201,6 @@ public class AStar {
                 }
             }
         }
-        // This case should ideally not be reached if Rules.canMoveToHomeCell was true.
         System.err.println("Error: Card " + card + " could not be placed in any home cell.");
     }
 
