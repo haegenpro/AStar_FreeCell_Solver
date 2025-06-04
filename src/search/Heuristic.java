@@ -1,6 +1,6 @@
 package search;
 
-import models.Card; //
+import models.Card;
 import models.GameState;
 
 import java.util.List;
@@ -11,8 +11,11 @@ import java.util.Collections;
 import java.util.ArrayList;
 
 public class Heuristic {
-
-    private static final int WEIGHT_HOME_CELLS = 100;
+    private static final int WEIGHT_CARDS_NOT_IN_HOME = 1;
+    private static final int WEIGHT_BLOCKED_CARDS = 1;
+    private static final int WEIGHT_FREECELL_PENALTY = 2;
+    private static final int WEIGHT_EMPTY_TABLEAU_BONUS = -1;
+    private static final int WEIGHT_SEQUENCE_BONUS = 0;
 
     private static int getRankValue(String rank) {
         switch (rank) {
@@ -33,38 +36,35 @@ public class Heuristic {
         }
     }
 
-    public int calculate(GameState state) {
-        int cardsInHomeCells = 0;
-        for (Stack<Card> homePile : state.getHomeCells()) { //
-            cardsInHomeCells += homePile.size();
-        }
-
-        int totalBlockers = calculateBlockers(state);
-
-        return (52 - cardsInHomeCells) * WEIGHT_HOME_CELLS + totalBlockers;
+    private static boolean isRed(Card card) {
+        return card.getSuit().equals("Diamonds") || card.getSuit().equals("Hearts");
     }
 
-    private int calculateBlockers(GameState state) {
-        int blockers = 0;
-        String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
-        Map<String, Integer> nextExpectedRankForSuit = new HashMap<>();
+    private static boolean isBlack(Card card) {
+        return card.getSuit().equals("Clubs") || card.getSuit().equals("Spades");
+    }
 
-        for (String suit : suits) {
-            nextExpectedRankForSuit.put(suit, 1);
-        }
-
+    public int calculate(GameState state) {
+        int cardsInHomeCells = 0;
         for (Stack<Card> homePile : state.getHomeCells()) {
-            if (!homePile.isEmpty()) {
-                Card topHomeCard = homePile.peek();
-                String suit = topHomeCard.getSuit();
-                int currentRankValue = getRankValue(topHomeCard.getRank());
-                if (currentRankValue < 13) {
-                    nextExpectedRankForSuit.put(suit, currentRankValue + 1);
-                } else {
-                    nextExpectedRankForSuit.put(suit, 0);
-                }
-            }
+            cardsInHomeCells += homePile.size();
         }
+        int cardsNotInHome = (52 - cardsInHomeCells) * WEIGHT_CARDS_NOT_IN_HOME;
+
+        int blockedCards = calculateBlockedCards(state) * WEIGHT_BLOCKED_CARDS;
+
+        int freeCellPenalty = (4 - state.getEmptyFreeCellsCount()) * WEIGHT_FREECELL_PENALTY;
+
+        int emptyTableauBonus = state.getEmptyTableauPilesCount() * WEIGHT_EMPTY_TABLEAU_BONUS;
+
+        int sequenceBonus = calculateSequenceBonus(state) * WEIGHT_SEQUENCE_BONUS;
+
+        return cardsNotInHome + blockedCards + freeCellPenalty + emptyTableauBonus + sequenceBonus;
+    }
+
+    private int calculateBlockedCards(GameState state) {
+        int blockers = 0;
+        Map<String, Integer> nextExpectedRank = getNextExpectedRanks(state);
 
         for (Stack<Card> tableauPile : state.getTableauPiles()) {
             if (tableauPile.isEmpty()) continue;
@@ -73,19 +73,84 @@ public class Heuristic {
             Collections.reverse(cardsInPile);
 
             for (int i = 0; i < cardsInPile.size(); i++) {
-                Card currentCard = cardsInPile.get(i); //
-                String currentCardSuit = currentCard.getSuit(); //
-                int currentCardRank = getRankValue(currentCard.getRank()); //
+                Card currentCard = cardsInPile.get(i);
+                String suit = currentCard.getSuit();
+                int rank = getRankValue(currentCard.getRank());
 
-                Integer expectedRank = nextExpectedRankForSuit.get(currentCardSuit);
-
-                if (expectedRank == null || expectedRank == 0) continue;
-
-                if (currentCardRank == expectedRank) {
+                Integer expectedRank = nextExpectedRank.get(suit);
+                if (expectedRank != null && expectedRank != 0 && rank == expectedRank) {
                     blockers += (cardsInPile.size() - 1 - i);
                 }
             }
         }
+
+        for (Card card : state.getFreeCells()) {
+            if (card != null) {
+                String suit = card.getSuit();
+                int rank = getRankValue(card.getRank());
+                Integer expectedRank = nextExpectedRank.get(suit);
+                if (expectedRank != null && expectedRank != 0 && rank == expectedRank) {
+                    blockers += 1;
+                }
+            }
+        }
+
         return blockers;
+    }
+
+    private Map<String, Integer> getNextExpectedRanks(GameState state) {
+        String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
+        Map<String, Integer> nextExpectedRank = new HashMap<>();
+
+        for (String suit : suits) {
+            nextExpectedRank.put(suit, 1);
+        }
+
+        for (Stack<Card> homePile : state.getHomeCells()) {
+            if (!homePile.isEmpty()) {
+                Card topCard = homePile.peek();
+                String suit = topCard.getSuit();
+                int currentRank = getRankValue(topCard.getRank());
+                if (currentRank < 13) {
+                    nextExpectedRank.put(suit, currentRank + 1);
+                } else {
+                    nextExpectedRank.put(suit, 0);
+                }
+            }
+        }
+
+        return nextExpectedRank;
+    }
+
+    private int calculateSequenceBonus(GameState state) {
+        int bonus = 0;
+
+        for (Stack<Card> tableauPile : state.getTableauPiles()) {
+            if (tableauPile.size() <= 1) continue;
+
+            List<Card> cards = new ArrayList<>(tableauPile);
+            Collections.reverse(cards);
+            int sequenceLength = 1;
+            for (int i = 1; i < cards.size(); i++) {
+                Card current = cards.get(i);
+                Card previous = cards.get(i - 1);
+
+                boolean correctColorAlternation = (isRed(current) && isBlack(previous)) || (isBlack(current) && isRed(previous));
+                boolean correctRankOrder = getRankValue(current.getRank()) == getRankValue(previous.getRank()) - 1;
+
+                if (correctColorAlternation && correctRankOrder) {
+                    sequenceLength++;
+                } else {
+                    break;
+                }
+            }
+
+            // Give bonus for longer sequences
+            if (sequenceLength > 1) {
+                bonus += sequenceLength;
+            }
+        }
+
+        return bonus;
     }
 }

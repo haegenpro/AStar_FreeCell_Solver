@@ -1,0 +1,19 @@
+# New FreeCell Game - From image provided
+# Tableau piles (1-8) - cards from top to bottom, separated by commas
+Queen of Clubs, 2 of Clubs, Jack of Clubs, 6 of Spades, 9 of Clubs, Jack of Clubs, 5 of Clubs
+2 of Spades, Ace of Diamonds, 2 of Diamonds, 8 of Hearts, King of Spades, 8 of Diamonds, 8 of Spades
+7 of Hearts, 6 of Diamonds, 5 of Spades, 5 of Hearts, 9 of Hearts, 9 of Spades, Ace of Spades
+King of Clubs, 3 of Clubs, King of Hearts, 10 of Diamonds, 4 of Spades, Queen of Spades, Jack of Diamonds
+7 of Diamonds, 3 of Hearts, 3 of Spades, 2 of Hearts, 10 of Hearts, 7 of Clubs
+Jack of Hearts, Queen of Hearts, King of Diamonds, 8 of Spades, 4 of Diamonds, 4 of Hearts
+7 of Clubs, 10 of Spades, 3 of Diamonds, Ace of Spades, Queen of Hearts, 6 of Hearts
+5 of Spades, 9 of Diamonds, 6 of Clubs, 4 of Clubs, 10 of Spades, Ace of Hearts
+
+# Free cells (4 positions) - use "empty" for empty cells
+empty, empty, empty, empty
+
+# Home cells (Clubs, Diamonds, Hearts, Spades) - top card of each pile
+empty
+empty
+empty
+empty

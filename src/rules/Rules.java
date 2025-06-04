@@ -67,8 +67,7 @@ public class Rules {
             return true;
         } else {
             Card topTableauCard = tableauPile.peek();
-            boolean alternatingColor = (isRed(cardToMove) && isBlack(topTableauCard)) ||
-                                       (isBlack(cardToMove) && isRed(topTableauCard));
+            boolean alternatingColor = (isRed(cardToMove) && isBlack(topTableauCard)) || (isBlack(cardToMove) && isRed(topTableauCard));
             boolean oneRankLower = getRankValue(cardToMove.getRank()) == getRankValue(topTableauCard.getRank()) - 1;
 
             return alternatingColor && oneRankLower;
