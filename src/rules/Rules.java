@@ -9,15 +9,15 @@ import java.util.ArrayList;
 
 public class Rules {
 
-    private static boolean isRed(Card card) {
+    public static boolean isRed(Card card) {
         return card.getSuit().equals("Diamonds") || card.getSuit().equals("Hearts");
     }
 
-    private static boolean isBlack(Card card) {
+    public static boolean isBlack(Card card) {
         return card.getSuit().equals("Clubs") || card.getSuit().equals("Spades");
     }
 
-    private static int getRankValue(String rank) {
+    public static int getRankValue(String rank) {
         switch (rank) {
             case "Ace": return 1;
             case "2": return 2;

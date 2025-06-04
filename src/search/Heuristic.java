@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.ArrayList;
 
 public class Heuristic {
-    private static final int WEIGHT_CARDS_NOT_IN_HOME = 1;
+    private static final int WEIGHT_CARDS_NOT_IN_HOME = 10;
     private static final int WEIGHT_BLOCKED_CARDS = 1;
     private static final int WEIGHT_FREECELL_PENALTY = 2;
-    private static final int WEIGHT_EMPTY_TABLEAU_BONUS = -1;
+    private static final int WEIGHT_EMPTY_TABLEAU_BONUS = 1;
     private static final int WEIGHT_SEQUENCE_BONUS = 1;
 
     private static int getRankValue(String rank) {
@@ -49,17 +49,22 @@ public class Heuristic {
         for (Stack<Card> homePile : state.getHomeCells()) {
             cardsInHomeCells += homePile.size();
         }
-        int cardsNotInHome = (52 - cardsInHomeCells) * WEIGHT_CARDS_NOT_IN_HOME;
+        int cardsNotInHomeComponent = (52 - cardsInHomeCells) * WEIGHT_CARDS_NOT_IN_HOME;
 
-        int blockedCards = calculateBlockedCards(state) * WEIGHT_BLOCKED_CARDS;
+        int blockedCardsComponent = calculateBlockedCards(state) * WEIGHT_BLOCKED_CARDS;
 
-        int freeCellPenalty = (4 - state.getEmptyFreeCellsCount()) * WEIGHT_FREECELL_PENALTY;
+        int freeCellPenaltyComponent = (4 - state.getEmptyFreeCellsCount()) * WEIGHT_FREECELL_PENALTY;
 
-        int emptyTableauBonus = state.getEmptyTableauPilesCount() * WEIGHT_EMPTY_TABLEAU_BONUS;
+        int emptyTableauBonusComponent = state.getEmptyTableauPilesCount() * WEIGHT_EMPTY_TABLEAU_BONUS;
+        
+        int sequenceBonusValue = calculateSequenceBonus(state);
+        int sequenceBonusEffect = sequenceBonusValue * WEIGHT_SEQUENCE_BONUS;
 
-        int sequenceBonus = calculateSequenceBonus(state) * WEIGHT_SEQUENCE_BONUS;
-
-        return cardsNotInHome + blockedCards + freeCellPenalty + emptyTableauBonus - sequenceBonus;
+        return cardsNotInHomeComponent +
+            blockedCardsComponent +
+            freeCellPenaltyComponent -
+            emptyTableauBonusComponent -
+            sequenceBonusEffect;
     }
 
     private int calculateBlockedCards(GameState state) {
