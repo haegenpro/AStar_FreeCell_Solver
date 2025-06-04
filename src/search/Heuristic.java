@@ -14,8 +14,8 @@ public class Heuristic {
     private static final int WEIGHT_CARDS_NOT_IN_HOME = 10;
     private static final int WEIGHT_BLOCKED_CARDS = 1;
     private static final int WEIGHT_FREECELL_PENALTY = 2;
-    private static final int WEIGHT_EMPTY_TABLEAU_BONUS = 1;
-    private static final int WEIGHT_SEQUENCE_BONUS = 1;
+    private static final int WEIGHT_EMPTY_TABLEAU_BONUS = 20;
+    private static final int WEIGHT_SEQUENCE_BONUS = 10;
 
     private static int getRankValue(String rank) {
         switch (rank) {

@@ -38,8 +38,8 @@ public class AStar {
 
         long startTime = System.currentTimeMillis();
         int visitedNodes = 0;
-        int maxNodes = 100000;
-        long maxTime = 60000;
+        int maxNodes = 1000000;
+        long maxTime = 120000;
 
         while (!openList.isEmpty() && visitedNodes < maxNodes) {
             if (System.currentTimeMillis() - startTime > maxTime) {
@@ -161,6 +161,7 @@ public class AStar {
                         Card cardToMove = newState.getTableauPiles().get(fromPile).pop();
                         newState.getTableauPiles().get(toPile).push(cardToMove);
                         String action = String.format("%d%d", fromPile + 1, toPile + 1);
+                        performAutocompleteMoves(newState);
                         successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
                     }
 
@@ -180,6 +181,7 @@ public class AStar {
                                 newDestPile.push(card);
                             }
                             String action = String.format("%d%d", fromPile + 1, toPile + 1);
+                            performAutocompleteMoves(newState);
                             successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
                             break;
                         }
@@ -188,7 +190,7 @@ public class AStar {
             }
         }
 
-        if (currentState.getEmptyFreeCellsCount() >= 2) {
+        if (currentState.getEmptyFreeCellsCount() > 1) {
             for (int fromPile = 0; fromPile < 8; fromPile++) {
                 if (!currentState.getTableauPiles().get(fromPile).isEmpty()) {
                     for (int toFreeCell = 0; toFreeCell < 4; toFreeCell++) {
