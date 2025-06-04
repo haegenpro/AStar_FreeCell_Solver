@@ -15,7 +15,7 @@ public class Heuristic {
     private static final int WEIGHT_BLOCKED_CARDS = 1;
     private static final int WEIGHT_FREECELL_PENALTY = 2;
     private static final int WEIGHT_EMPTY_TABLEAU_BONUS = -1;
-    private static final int WEIGHT_SEQUENCE_BONUS = 0;
+    private static final int WEIGHT_SEQUENCE_BONUS = 1;
 
     private static int getRankValue(String rank) {
         switch (rank) {
@@ -59,7 +59,7 @@ public class Heuristic {
 
         int sequenceBonus = calculateSequenceBonus(state) * WEIGHT_SEQUENCE_BONUS;
 
-        return cardsNotInHome + blockedCards + freeCellPenalty + emptyTableauBonus + sequenceBonus;
+        return cardsNotInHome + blockedCards + freeCellPenalty + emptyTableauBonus - sequenceBonus;
     }
 
     private int calculateBlockedCards(GameState state) {
@@ -145,7 +145,6 @@ public class Heuristic {
                 }
             }
 
-            // Give bonus for longer sequences
             if (sequenceLength > 1) {
                 bonus += sequenceLength;
             }

@@ -68,23 +68,15 @@ public class AStar {
                 return reconstructPath(currentNode);
             }
 
-            List<Node> homeMovesSuccessors = getHomeCellMoves(currentNode);
-            for (Node successor : homeMovesSuccessors) {
+            List<Node> allSuccessors = new ArrayList<>();
+            allSuccessors.addAll(getHomeCellMoves(currentNode));
+            allSuccessors.addAll(getOtherMoves(currentNode));
+
+            for (Node successor : allSuccessors) {
                 GameState successorState = successor.getState();
                 if (!closedList.contains(successorState) && !openStates.contains(successorState)) {
                     openList.add(successor);
                     openStates.add(successorState);
-                }
-            }
-
-            if (homeMovesSuccessors.isEmpty()) {
-                List<Node> otherSuccessors = getOtherMoves(currentNode);
-                for (Node successor : otherSuccessors) {
-                    GameState successorState = successor.getState();
-                    if (!closedList.contains(successorState) && !openStates.contains(successorState)) {
-                        openList.add(successor);
-                        openStates.add(successorState);
-                    }
                 }
             }
         }
@@ -169,9 +161,9 @@ public class AStar {
                         successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
                     }
 
-                    int maxMovable = Math.min(Rules.getMaxMovableCards(currentState), 4);
+                    int actualMaxSequenceToMove = Rules.getMaxMovableCards(currentState);
                     Stack<Card> sourcePile = currentState.getTableauPiles().get(fromPile);
-                    for (int numCards = Math.min(maxMovable, sourcePile.size()); numCards >= 2; numCards--) {
+                    for (int numCards = Math.min(actualMaxSequenceToMove, sourcePile.size()); numCards >= 2; numCards--) {
                         if (Rules.canMoveMultipleTableauCards(currentState, fromPile, toPile, numCards)) {
                             GameState newState = currentState.deepCopy();
                             Stack<Card> newSourcePile = newState.getTableauPiles().get(fromPile);
