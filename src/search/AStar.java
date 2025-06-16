@@ -131,8 +131,6 @@ public class AStar {
     private List<Node> getOtherMoves(Node currentNode) {
         List<Node> successors = new ArrayList<>();
         GameState currentState = currentNode.getState();
-        int currentDepth = currentNode.getDepth();
-        int currentPathCost = currentNode.getPathCost();
 
         for (int fromFreeCell = 0; fromFreeCell < 4; fromFreeCell++) {
             if (currentState.getFreeCells().get(fromFreeCell) != null) {

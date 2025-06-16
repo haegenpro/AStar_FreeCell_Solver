@@ -30,7 +30,7 @@ public class Main {
             }
         } else {
             System.out.println("Choose a test case:");
-            System.out.println("1. Easy test case (from image)");
+            System.out.println("1. Easy difficulty (default)");
             System.out.println("2. Medium difficulty");
             System.out.println("3. Hard difficulty");
             System.out.println("4. Boss difficulty (very hard)");
