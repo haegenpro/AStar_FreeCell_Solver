@@ -21,18 +21,14 @@ public class AStar {
     public AStar() {
         this.heuristic = new Heuristic();
     }
-    public List<String> solve(GameState initialState) {
-        PriorityQueue<Node> openList = new PriorityQueue<>(new Comparator<Node>() {
-            @Override
-            public int compare(Node n1, Node n2) {
-                return Integer.compare(n1.getFScore(heuristic), n2.getFScore(heuristic));
-            }
-        });
 
+    public List<SolutionStep> solve(GameState initialState) {
+
+        PriorityQueue<Node> openList = new PriorityQueue<>(Comparator.comparingInt(n -> heuristic.calculate(n.getState())));
         HashSet<GameState> closedList = new HashSet<>();
         HashSet<GameState> openStates = new HashSet<>();
 
-        Node initialNode = new Node(null, initialState, "START", 0, 0);
+        Node initialNode = new Node(null, initialState, null, 0, 0);
         openList.add(initialNode);
         openStates.add(initialState);
 
@@ -52,10 +48,7 @@ public class AStar {
             visitedNodes++;
 
             if (visitedNodes % 1000 == 0) {
-                System.out.println("Visited nodes: " + visitedNodes + ", Open list size: " + openList.size() + 
-                                   ", Current depth: " + currentNode.getDepth() + 
-                                   ", F-score: " + currentNode.getFScore(heuristic) +
-                                   ", H-score: " + heuristic.calculate(currentNode.getState()));
+                System.out.println("Visited nodes: " + visitedNodes + ", Open list size: " + openList.size() + ", Current depth: " + currentNode.getDepth() + ", F-score: " + currentNode.getFScore(heuristic) + ", H-score: " + heuristic.calculate(currentNode.getState()));
             }
 
             if (closedList.contains(currentNode.getState())) {
@@ -99,19 +92,20 @@ public class AStar {
     private List<Node> getHomeCellMoves(Node currentNode) {
         List<Node> successors = new ArrayList<>();
         GameState currentState = currentNode.getState();
-        int currentDepth = currentNode.getDepth();
-        int currentPathCost = currentNode.getPathCost();
 
         for (int fromPile = 0; fromPile < 8; fromPile++) {
-            if (!currentState.getTableauPiles().get(fromPile).isEmpty()) {
-                if (Rules.canMoveTableauToHomeCell(currentState, fromPile)) {
-                    GameState newState = currentState.deepCopy();
-                    Card cardToMove = newState.getTableauPiles().get(fromPile).pop();
-                    addCardToHomeCell(newState, cardToMove);
-                    String action = String.format("%dh", fromPile + 1);
-                    performAutocompleteMoves(newState);
-                    successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
-                }
+            if (!currentState.getTableauPiles().get(fromPile).isEmpty() && Rules.canMoveTableauToHomeCell(currentState, fromPile)) {
+                GameState newState = currentState.deepCopy();
+                Card cardToMove = newState.getTableauPiles().get(fromPile).pop();
+                addCardToHomeCell(newState, cardToMove);
+                
+                List<Card> autoMovedCards = performAutocompleteMoves(newState);
+                
+                String notation = String.format("%dh", fromPile + 1);
+                String description = String.format("Move %s from Tableau %d to Home", cardToMove, fromPile + 1);
+                SolutionStep step = new SolutionStep(notation, description, autoMovedCards);
+                
+                successors.add(new Node(currentNode, newState, step, currentNode.getDepth() + 1, currentNode.getPathCost() + 1));
             }
         }
 
@@ -121,9 +115,13 @@ public class AStar {
                     GameState newState = currentState.deepCopy();
                     Card cardToMove = newState.getFreeCells().set(fromFreeCell, null);
                     addCardToHomeCell(newState, cardToMove);
-                    String action = String.format("%ch", getFreeCellChar(fromFreeCell));
-                    performAutocompleteMoves(newState);
-                    successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
+                    List<Card> autoMovedCards = performAutocompleteMoves(newState);
+
+                    String notation = String.format("%dh", fromFreeCell + 1);
+                    String description = String.format("Move %s from FreeCell %c to Home", cardToMove, getFreeCellChar(fromFreeCell));
+                    SolutionStep step = new SolutionStep(notation, description, autoMovedCards);
+                    
+                    successors.add(new Node(currentNode, newState, step, currentNode.getDepth() + 1, currentNode.getPathCost() + 1));
                 }
             }
         }
@@ -143,9 +141,13 @@ public class AStar {
                         GameState newState = currentState.deepCopy();
                         Card cardToMove = newState.getFreeCells().set(fromFreeCell, null);
                         newState.getTableauPiles().get(toPile).push(cardToMove);
-                        String action = String.format("%c%d", getFreeCellChar(fromFreeCell), toPile + 1);
-                        performAutocompleteMoves(newState);
-                        successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
+                        List<Card> autoMovedCards = performAutocompleteMoves(newState);
+
+                        String notation = String.format("%c%d", getFreeCellChar(fromFreeCell), toPile + 1);
+                        String description = String.format("Move %s from FreeCell %c to Tableau %d", cardToMove, getFreeCellChar(fromFreeCell), toPile + 1);
+                        SolutionStep step = new SolutionStep(notation, description, autoMovedCards);
+                        
+                        successors.add(new Node(currentNode, newState, step, currentNode.getDepth() + 1, currentNode.getPathCost() + 1));
                     }
                 }
             }
@@ -160,9 +162,13 @@ public class AStar {
                         GameState newState = currentState.deepCopy();
                         Card cardToMove = newState.getTableauPiles().get(fromPile).pop();
                         newState.getTableauPiles().get(toPile).push(cardToMove);
-                        String action = String.format("%d%d", fromPile + 1, toPile + 1);
-                        performAutocompleteMoves(newState);
-                        successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
+                        List<Card> autoMovedCards = performAutocompleteMoves(newState);
+
+                        String notation = String.format("%d%d", fromPile + 1, toPile + 1);
+                        String description = String.format("Move %s from Tableau %d to Tableau %d", cardToMove, fromPile + 1, toPile + 1);
+                        SolutionStep step = new SolutionStep(notation, description, autoMovedCards);
+                        
+                        successors.add(new Node(currentNode, newState, step, currentNode.getDepth() + 1, currentNode.getPathCost() + 1));
                     }
 
                     int actualMaxSequenceToMove = Rules.getMaxMovableCards(currentState);
@@ -177,12 +183,18 @@ public class AStar {
                             for (int i = 0; i < numCards; i++) {
                                 cardsToMove.add(0, newSourcePile.pop());
                             }
+                            Card cardToMove = cardsToMove.get(0);
+                            Card lastCard = cardsToMove.get(cardsToMove.size() - 1);
                             for (Card card : cardsToMove) {
                                 newDestPile.push(card);
                             }
-                            String action = String.format("%d%d", fromPile + 1, toPile + 1);
-                            performAutocompleteMoves(newState);
-                            successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
+                            List<Card> autoMovedCards = performAutocompleteMoves(newState);
+
+                            String notation = String.format("%d%d", fromPile + 1, toPile + 1);
+                            String description = String.format("Move %s-%s from Tableau %d to Tableau %d", cardToMove, lastCard, fromPile + 1, toPile + 1);
+                            SolutionStep step = new SolutionStep(notation, description, autoMovedCards);
+                            
+                            successors.add(new Node(currentNode, newState, step, currentNode.getDepth() + 1, currentNode.getPathCost() + 1));
                             break;
                         }
                     }
@@ -190,18 +202,22 @@ public class AStar {
             }
         }
 
-        if (currentState.getEmptyFreeCellsCount() > 1) {
-            for (int fromPile = 0; fromPile < 8; fromPile++) {
-                if (!currentState.getTableauPiles().get(fromPile).isEmpty()) {
-                    for (int toFreeCell = 0; toFreeCell < 4; toFreeCell++) {
-                        if (Rules.canMoveTableauToFreeCell(currentState, fromPile, toFreeCell)) {
-                            GameState newState = currentState.deepCopy();
-                            Card cardToMove = newState.getTableauPiles().get(fromPile).pop();
-                            newState.getFreeCells().set(toFreeCell, cardToMove);
-                            String action = String.format("%d%c", fromPile + 1, getFreeCellChar(toFreeCell));
-                            successors.add(new Node(currentNode, newState, action, currentDepth + 1, currentPathCost + 1));
-                            break;
-                        }
+        for (int fromPile = 0; fromPile < 8; fromPile++) {
+            if (!currentState.getTableauPiles().get(fromPile).isEmpty()) {
+                for (int toFreeCell = 0; toFreeCell < 4; toFreeCell++) {
+                    if (Rules.canMoveTableauToFreeCell(currentState, fromPile, toFreeCell)) {
+                        GameState newState = currentState.deepCopy();
+                        Card cardToMove = newState.getTableauPiles().get(fromPile).pop();
+                        newState.getFreeCells().set(toFreeCell, cardToMove);
+
+                        List<Card> autoMovedCards = performAutocompleteMoves(newState);
+
+                        String notation = String.format("%d%c", fromPile + 1, getFreeCellChar(toFreeCell));
+                        String description = String.format("Move %s from Tableau %d to FreeCell %c", cardToMove, fromPile + 1, getFreeCellChar(toFreeCell));
+                        SolutionStep step = new SolutionStep(notation, description, autoMovedCards);
+                        
+                        successors.add(new Node(currentNode, newState, step, currentNode.getDepth() + 1, currentNode.getPathCost() + 1));
+                        break;
                     }
                 }
             }
@@ -209,58 +225,52 @@ public class AStar {
         return successors;
     }
 
-    private void performAutocompleteMoves(GameState state) {
-        boolean LMoveMadeInThisPassTotal;
+    private List<Card> performAutocompleteMoves(GameState state) {
+        List<Card> movedCards = new ArrayList<>();
+        boolean moveMadeInThisPassTotal;
         final String[] suitOrder = {"Clubs", "Diamonds", "Hearts", "Spades"}; 
 
         do {
-            LMoveMadeInThisPassTotal = false;
-
+            moveMadeInThisPassTotal = false;
             for (int i = 0; i < state.getTableauPiles().size(); i++) {
                 while (!state.getTableauPiles().get(i).isEmpty()) {
                     Card card = state.getTableauPiles().get(i).peek();
-                    if (Rules.canMoveTableauToHomeCell(state, i)) {
-                        if (isSafeToAutocomplete(state, card, suitOrder)) {
-                            state.getTableauPiles().get(i).pop();
-                            addCardToHomeCell(state, card);
-                            LMoveMadeInThisPassTotal = true;
-                        } else {
-                            break;
-                        }
+                    if (Rules.canMoveTableauToHomeCell(state, i) && isSafeToAutocomplete(state, card, suitOrder)) {
+                        state.getTableauPiles().get(i).pop();
+                        addCardToHomeCell(state, card);
+                        movedCards.add(card);
+                        moveMadeInThisPassTotal = true;
                     } else {
-                        break;
+                        break; 
                     }
                 }
             }
-
             for (int i = 0; i < state.getFreeCells().size(); i++) {
                 Card card = state.getFreeCells().get(i);
-                if (card != null) {
-                    if (Rules.canMoveFreeCellToHomeCell(state, i)) {
-                        if (isSafeToAutocomplete(state, card, suitOrder)) {
-                            state.getFreeCells().set(i, null);
-                            addCardToHomeCell(state, card);
-                            LMoveMadeInThisPassTotal = true;
-                        }
-                    }
+                if (card != null && Rules.canMoveFreeCellToHomeCell(state, i) && isSafeToAutocomplete(state, card, suitOrder)) {
+                    state.getFreeCells().set(i, null);
+                    addCardToHomeCell(state, card);
+                    movedCards.add(card);
+                    moveMadeInThisPassTotal = true;
                 }
             }
-        } while (LMoveMadeInThisPassTotal);
+        } while (moveMadeInThisPassTotal);
+        return movedCards;
     }
     
     private boolean isSafeToAutocomplete(GameState state, Card cardToMove, String[] suitOrder) {
         int rankVal = Rules.getRankValue(cardToMove.getRank());
 
-        if (rankVal == 1 || rankVal == 2) return true;
+        if (rankVal <= 2) return true;
 
         int requiredRankOnOpposite = rankVal - 2;
-
         boolean cardIsRed = Rules.isRed(cardToMove);
         Map<String, Integer> currentHomeRanks = new HashMap<>();
         for (int i = 0; i < suitOrder.length; i++) {
             if (state.getHomeCells().get(i).isEmpty()) {
                 currentHomeRanks.put(suitOrder[i], 0);
-            } else {
+            } 
+            else {
                 currentHomeRanks.put(suitOrder[i], Rules.getRankValue(state.getHomeCells().get(i).peek().getRank()));
             }
         }
@@ -277,29 +287,27 @@ public class AStar {
     }
 
     private void addCardToHomeCell(GameState state, Card card) {
-        List<Stack<Card>> homeCells = state.getHomeCells();
-        
-        for (Stack<Card> homePile : homeCells) {
+        for (Stack<Card> homePile : state.getHomeCells()) {
             if (homePile.isEmpty()) {
                 if (card.getRank().equals("Ace")) {
                     homePile.push(card);
                     return;
                 }
-            } else {
+            } 
+            else {
                 if (homePile.peek().getSuit().equals(card.getSuit())) {
                     homePile.push(card);
                     return;
                 }
             }
         }
-        System.err.println("Error: Card " + card + " could not be placed in any home cell.");
     }
 
-    private List<String> reconstructPath(Node goalNode) {
-        List<String> path = new ArrayList<>();
+    private List<SolutionStep> reconstructPath(Node goalNode) {
+        List<SolutionStep> path = new ArrayList<>();
         Node currentNode = goalNode;
-        while (currentNode != null && currentNode.getAction() != null) {
-            path.add(currentNode.getAction());
+        while (currentNode != null && currentNode.getStep() != null) {
+            path.add(currentNode.getStep());
             currentNode = currentNode.getParent();
         }
         Collections.reverse(path);
@@ -307,9 +315,6 @@ public class AStar {
     }
 
     private char getFreeCellChar(int index) {
-        if (index >= 0 && index < 4) {
-            return (char) ('a' + index);
-        }
-        throw new IllegalArgumentException("Invalid free cell index: " + index); // Or handle error appropriately
+        return (char) ('a' + index);
     }
 }

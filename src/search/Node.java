@@ -1,7 +1,6 @@
 package search;
 
 import models.GameState;
-
 import java.util.Objects;
 
 public class Node {
@@ -9,16 +8,20 @@ public class Node {
     private int depth;
     private int pathCost;
     private GameState state;
-    private String action;
+    private SolutionStep step; 
 
-    public Node(Node parent, GameState state, String action, int depth, int pathCost) {
+    public Node(Node parent, GameState state, SolutionStep step, int depth, int pathCost) {
         this.parent = parent;
         this.depth = depth;
         this.pathCost = pathCost;
         this.state = state;
-        this.action = action;
+        this.step = step;
     }
 
+    public SolutionStep getStep() {
+        return step;
+    }
+    
     public Node getParent() {
         return parent;
     }
@@ -34,15 +37,12 @@ public class Node {
     public GameState getState() {
         return state;
     }
-
-    public String getAction() {
-        return action;
-    }
-
+    
     public int getFScore(Heuristic heuristic) {
         return this.pathCost + heuristic.calculate(this.state);
     }
     
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -50,7 +50,8 @@ public class Node {
         return Objects.equals(this.state, other.state);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hash(state.hashCode());
+        return Objects.hash(state);
     }
 }

@@ -1,6 +1,7 @@
 import models.Card;
 import models.GameState;
 import search.AStar;
+import search.SolutionStep;
 import utils.BoardLoader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -111,12 +112,22 @@ public class Main {
         AStar solver = new AStar();
 
         System.out.println("\nSearching for a solution...");
-        List<String> solutionPath = solver.solve(initialState);
+        List<SolutionStep> solutionPath = solver.solve(initialState);
 
-        if (solutionPath != null) {
-            System.out.println("\nSolution Found! Number of moves: " + solutionPath.size());
+        if (solutionPath != null && !solutionPath.isEmpty()) {
+            System.out.println("\n--- DETAILED SOLUTION FOUND ---");
+            System.out.println("Total Player-Initiated Moves: " + solutionPath.size());
+            
             for (int i = 0; i < solutionPath.size(); i++) {
-                System.out.println((i + 1) + ". " + solutionPath.get(i));
+                SolutionStep step = solutionPath.get(i);
+                
+                System.out.printf("\n%d. %s: %s\n", (i + 1), step.primaryMoveNotation, step.primaryMoveDescription);
+                
+                if (!step.automatedMoves.isEmpty()) {
+                    for (Card autoMovedCard : step.automatedMoves) {
+                        System.out.printf("   [Auto] Moved %s to Home\n", autoMovedCard);
+                    }
+                }
             }
         } else {
             System.out.println("\nNo solution found for this starting configuration.");

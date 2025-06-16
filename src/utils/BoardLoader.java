@@ -10,16 +10,6 @@ import java.util.Stack;
 
 public class BoardLoader {
 
-    /**
-     * Loads a FreeCell game state from a text file.
-     * 
-     * File format:
-     * Line 1-8: Tableau piles (one pile per line, cards separated by spaces)
-     * Line 9: Free cells (4 cards or "empty" separated by spaces)
-     * Line 10-13: Home cells (one suit per line, showing top card or "empty")
-     * 
-     * Card format: "Rank of Suit" (e.g., "Ace of Spades", "10 of Hearts")
-     */
     public static GameState loadFromFile(String filename) throws IOException {
         GameState state = new GameState();
         
@@ -104,7 +94,8 @@ public class BoardLoader {
                 Stack<Card> pile = state.getTableauPiles().get(i);
                 if (pile.isEmpty()) {
                     writer.println("empty");
-                } else {
+                } 
+                else {
                     StringBuilder sb = new StringBuilder();
                     for (int j = 0; j < pile.size(); j++) {
                         if (j > 0) sb.append(", ");
@@ -126,7 +117,8 @@ public class BoardLoader {
                 Stack<Card> pile = state.getHomeCells().get(i);
                 if (pile.isEmpty()) {
                     writer.println("empty");
-                } else {
+                } 
+                else {
                     StringBuilder sb = new StringBuilder();
                     for (int j = 0; j < pile.size(); j++) {
                         if (j > 0) sb.append(", ");
