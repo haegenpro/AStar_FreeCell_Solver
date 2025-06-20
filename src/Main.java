@@ -70,10 +70,10 @@ public class Main {
                     break;
                 case 4:
                     try {
-                        System.out.println("Loading boss difficulty...");
-                        initialState = BoardLoader.loadFromFile("boards/boss.txt");
+                        System.out.println("Loading hard difficulty...");
+                        initialState = BoardLoader.loadFromFile("boards/hard2.txt");
                     } catch (Exception e) {
-                        System.err.println("Error loading boss.txt: " + e.getMessage());
+                        System.err.println("Error loadinghard2.txt: " + e.getMessage());
                         return;
                     }
                     break;

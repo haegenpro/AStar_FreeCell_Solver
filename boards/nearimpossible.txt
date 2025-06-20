@@ -1,0 +1,20 @@
+# Near Impossible Game - Game 5087
+
+# Tableau piles (1-8) - cards from bottom to top, separated by commas
+3 of Hearts, 6 of Hearts, 8 of Clubs, 7 of Spades, King of Spades, 3 of Diamonds, 9 of Hearts
+Jack of Spades, King of Clubs, 7 of Diamonds, 6 of Diamonds, 5 of Hearts, Jack of Diamonds, Jack of Hearts
+4 of Hearts, 6 of Clubs, 8 of Hearts, 3 of Clubs, 8 of Diamonds, 10 of Spades, Queen of Clubs
+7 of Clubs, 9 of Spades, Ace of Hearts, 7 of Hearts, 2 of Clubs, 5 of Spades, 10 of Hearts
+2 of Spades, Jack of Clubs, 9 of Clubs, King of Hearts, 10 of Clubs, King of Diamonds
+3 of Spades, 4 of Diamonds, 2 of Diamonds, Queen of Spades, 8 of Spades, 5 of Clubs
+4 of Spades, Queen of Hearts, 4 of Clubs, Ace of Diamonds, 2 of Hearts, 9 of Diamonds
+Ace of Clubs, Ace of Spades, Queen of Diamonds, 5 of Diamonds, 6 of Spades, 10 of Diamonds
+
+# Free cells (4 positions) - use "empty" for empty cells
+empty, empty, empty, empty
+
+# Home cells (Clubs, Diamonds, Hearts, Spades) - top card of each pile
+empty
+empty
+empty
+empty

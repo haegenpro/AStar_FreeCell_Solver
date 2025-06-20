@@ -1,4 +1,4 @@
-# Easy FreeCell Game - simple configuration for beginners
+# Easy FreeCell Game - Game 25904
 
 # Tableau piles (1-8) - cards from top to bottom, separated by commas
 3 of Hearts, Jack of Diamonds, King of Diamonds, Ace of Hearts, 2 of Spades, 2 of Hearts, Ace of Diamonds

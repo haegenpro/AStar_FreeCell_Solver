@@ -17,6 +17,7 @@ import java.util.Stack;
 public class AStar {
 
     private Heuristic heuristic;
+    private static final int MAX_SEARCH_DEPTH = 80;
 
     public AStar() {
         this.heuristic = new Heuristic();
@@ -68,6 +69,9 @@ public class AStar {
             allSuccessors.addAll(getOtherMoves(currentNode));
 
             for (Node successor : allSuccessors) {
+                if (successor.getDepth() > MAX_SEARCH_DEPTH) {
+                    continue;
+                }
                 GameState successorState = successor.getState();
                 if (!closedList.contains(successorState) && !openStates.contains(successorState)) {
                     openList.add(successor);

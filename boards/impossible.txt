@@ -1,4 +1,4 @@
-# Impossible FreeCell Game - no known solution available
+# Impossible FreeCell Game - Game 11982
 
 King of Hearts, 3 of Spades, 7 of Clubs, Jack of Hearts, 2 of Diamonds, Queen of Spades, 6 of Hearts, 10 of Clubs
 8 of Spades, Queen of Hearts, 5 of Clubs, 9 of Diamonds, King of Spades, 4 of Hearts, Jack of Clubs

@@ -1,4 +1,4 @@
-# Hard FreeCell Game - Challenging puzzle with proper card distribution
+# Hard FreeCell Game - Game 
 
 # Tableau piles (1-8) - cards from bottom to top, separated by commas
 King of Spades, 7 of Hearts, Ace of Clubs, Jack of Diamonds, 4 of Spades, Queen of Hearts, 2 of Clubs

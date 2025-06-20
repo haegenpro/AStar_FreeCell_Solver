@@ -1,4 +1,4 @@
-# Medium FreeCell Game - Most challenging puzzle from the 'easy' category
+# Medium FreeCell Game - Most challenging puzzle from the 'easy' category - Game 34898
 
 # Tableau piles (1-8) - cards from bottom to top, separated by commas
 Queen of Clubs, 2 of Clubs, Jack of Spades, 6 of Spades, 9 of Clubs, Jack of Clubs, 5 of Clubs
