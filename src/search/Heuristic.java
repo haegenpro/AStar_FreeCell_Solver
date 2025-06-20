@@ -19,18 +19,16 @@ public class Heuristic {
 
     public int calculate(GameState state) {
         int cardsInHome = 0;
+
         for (Stack<Card> homePile : state.getHomeCells()) {
             cardsInHome += homePile.size();
         }
-        int homeReward = cardsInHome * REWARD_PER_CARD_IN_HOME;
 
+        int homeReward = cardsInHome * REWARD_PER_CARD_IN_HOME;
         int sequenceScore = calculateSequenceScore(state);
         int sequenceReward = sequenceScore * REWARD_PER_SEQUENCE_CARD;
-
         int emptyTableauReward = state.getEmptyTableauPilesCount() * REWARD_PER_EMPTY_TABLEAU;
-        
         int freeCellPenalty = (4 - state.getEmptyFreeCellsCount()) * PENALTY_PER_USED_FREECELL;
-
         int blockedPenalty = calculateBlockedPenalty(state) * PENALTY_PER_BLOCKED_CARD;
 
         return homeReward + sequenceReward + emptyTableauReward + freeCellPenalty + blockedPenalty;
@@ -89,7 +87,7 @@ public class Heuristic {
         Map<String, Integer> nextExpectedRankMap = new HashMap<>();
         String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
         for (String suit : suits) {
-            nextExpectedRankMap.put(suit, 1); // Expect Ace
+            nextExpectedRankMap.put(suit, 1);
         }
 
         for (Stack<Card> homePile : state.getHomeCells()) {

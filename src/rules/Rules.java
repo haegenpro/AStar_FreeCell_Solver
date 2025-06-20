@@ -120,16 +120,12 @@ public class Rules {
     }
 
     public static boolean canMoveTableauToTableau(GameState state, int fromPileIndex, int toPileIndex) {
-        if (fromPileIndex < 0 || fromPileIndex >= state.getTableauPiles().size() ||
-            toPileIndex < 0 || toPileIndex >= state.getTableauPiles().size() ||
-            fromPileIndex == toPileIndex) {
+        if (fromPileIndex < 0 || fromPileIndex >= state.getTableauPiles().size() || toPileIndex < 0 || toPileIndex >= state.getTableauPiles().size() || fromPileIndex == toPileIndex) {
             return false;
         }
 
         Stack<Card> fromPile = state.getTableauPiles().get(fromPileIndex);
-        if (fromPile.isEmpty()) {
-            return false;
-        }
+        if (fromPile.isEmpty()) return false;
 
         Card cardToMove = fromPile.peek();
 
@@ -139,10 +135,8 @@ public class Rules {
             return true;
         } else {
             Card topToPileCard = toPile.peek();
-            boolean alternatingColor = (isRed(cardToMove) && isBlack(topToPileCard)) ||
-                                       (isBlack(cardToMove) && isRed(topToPileCard));
+            boolean alternatingColor = (isRed(cardToMove) && isBlack(topToPileCard)) || (isBlack(cardToMove) && isRed(topToPileCard));
             boolean oneRankLower = getRankValue(cardToMove.getRank()) == getRankValue(topToPileCard.getRank()) - 1;
-
             return alternatingColor && oneRankLower;
         }
     }
@@ -191,8 +185,7 @@ public class Rules {
         if (validSequence) {
             if (destinationCard == null) {
             } else {
-                boolean alternatingColor = (isRed(bottomOfSequenceCard) && isBlack(destinationCard)) ||
-                                           (isBlack(bottomOfSequenceCard) && isRed(destinationCard));
+                boolean alternatingColor = (isRed(bottomOfSequenceCard) && isBlack(destinationCard)) || (isBlack(bottomOfSequenceCard) && isRed(destinationCard));
                 boolean oneRankLower = getRankValue(bottomOfSequenceCard.getRank()) == getRankValue(destinationCard.getRank()) - 1;
                 if (!(alternatingColor && oneRankLower)) {
                     validSequence = false;

@@ -25,7 +25,8 @@ public class AStar {
 
     public List<SolutionStep> solve(GameState initialState) {
 
-        PriorityQueue<Node> openList = new PriorityQueue<>(Comparator.comparingInt(n -> heuristic.calculate(n.getState())));
+        PriorityQueue<Node> openList = new PriorityQueue<>
+        (Comparator.comparingInt(n -> n.getFScore(heuristic)));
         HashSet<GameState> closedList = new HashSet<>();
         HashSet<GameState> openStates = new HashSet<>();
 
