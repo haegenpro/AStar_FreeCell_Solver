@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Starting FreeCell Solver...");
         System.out.println("Usage: java Main [board_file.txt]");
-        System.out.println("Available boards: easy.txt, medium.txt, hard.txt, boss.txt, impossible.txt");
+        System.out.println("Available boards: easy.txt, medium.txt, hard.txt, impossible.txt");
         System.out.println();
 
         GameState initialState = null;
@@ -25,7 +25,7 @@ public class Main {
                 initialState = BoardLoader.loadFromFile("boards/" + filename);
             } catch (Exception e) {
                 System.err.println("Error loading file: " + e.getMessage());
-                System.out.println("Available board files: easy.txt, medium.txt, hard.txt, boss.txt, impossible.txt");
+                System.out.println("Available board files: easy.txt, medium.txt, hard.txt, impossible.txt");
                 return;
             }
         } else {
@@ -33,7 +33,7 @@ public class Main {
             System.out.println("1. Easy difficulty (default)");
             System.out.println("2. Medium difficulty");
             System.out.println("3. Hard difficulty");
-            System.out.println("4. Boss difficulty (very hard)");
+            System.out.println("4. Very Hard difficulty (very hard)");
             System.out.println("5. Impossible (unsolvable)");
             System.out.println("6. Random shuffled game");
             System.out.println("7. Programmatic easy test (nearly solved)");

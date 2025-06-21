@@ -36,8 +36,8 @@ public class AStar {
 
         long startTime = System.currentTimeMillis();
         int visitedNodes = 0;
-        int maxNodes = 1000000;
-        long maxTime = 120000;
+        int maxNodes = 200000;
+        long maxTime = 60000;
 
         while (!openList.isEmpty() && visitedNodes < maxNodes) {
             if (System.currentTimeMillis() - startTime > maxTime) {
