@@ -1,14 +1,14 @@
-# Near Impossible Game - Game 5087
+# Near Impossible Game - Game 30801
 
 # Tableau piles (1-8) - cards from bottom to top, separated by commas
-3 of Hearts, 6 of Hearts, 8 of Clubs, 7 of Spades, King of Spades, 3 of Diamonds, 9 of Hearts
-Jack of Spades, King of Clubs, 7 of Diamonds, 6 of Diamonds, 5 of Hearts, Jack of Diamonds, Jack of Hearts
-4 of Hearts, 6 of Clubs, 8 of Hearts, 3 of Clubs, 8 of Diamonds, 10 of Spades, Queen of Clubs
-7 of Clubs, 9 of Spades, Ace of Hearts, 7 of Hearts, 2 of Clubs, 5 of Spades, 10 of Hearts
-2 of Spades, Jack of Clubs, 9 of Clubs, King of Hearts, 10 of Clubs, King of Diamonds
-3 of Spades, 4 of Diamonds, 2 of Diamonds, Queen of Spades, 8 of Spades, 5 of Clubs
-4 of Spades, Queen of Hearts, 4 of Clubs, Ace of Diamonds, 2 of Hearts, 9 of Diamonds
-Ace of Clubs, Ace of Spades, Queen of Diamonds, 5 of Diamonds, 6 of Spades, 10 of Diamonds
+8 of Diamonds, 8 of Hearts, 6 of Spades, 4 of Hearts, Ace of Diamonds, 2 of Spades, 6 of Hearts
+Ace of Clubs, 6 of Diamonds, 7 of Diamonds, Ace of Spades, 7 of Hearts, Jack of Spades, 4 of Diamonds
+7 of Spades, 9 of Diamonds, King of Clubs, Jack of Diamonds, 3 of Diamonds, 3 of Clubs, 9 of Clubs
+King of Hearts, 10 of Hearts, 10 of Spades, Jack of Hearts, 10 of Clubs, Jack of Clubs, 4 of Spades
+King of Spades, 6 of Clubs, 10 of Diamonds, 8 of Spades, 5 of Clubs, 3 of Spades
+Ace of Hearts, Queen of Diamonds, 5 of Hearts, 9 of Hearts, 4 of Clubs, Queen of Clubs
+Queen of Hearts, 8 of Clubs, Queen of Spades, 2 of Hearts, 2 of Diamonds, 2 of Clubs
+5 of Spades, 5 of Diamonds, King of Diamonds, 7 of Clubs, 9 of Spades, 3 of Hearts
 
 # Free cells (4 positions) - use "empty" for empty cells
 empty, empty, empty, empty
