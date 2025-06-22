@@ -1,0 +1,17 @@
+Jack of Diamonds, King of Diamonds, 2 of Spades, 4 of Clubs, 3 of Spades, 6 of Diamonds, 6 of Spades
+2 of Diamonds, King of Clubs, King of Spades, 5 of Clubs, 10 of Diamonds, 8 of Spades, 9 of Clubs
+9 of Hearts, 9 of Spades, 9 of Diamonds, 10 of Spades, 4 of Spades, 8 of Diamonds, 2 of Hearts
+Jack of Clubs, 5 of Spades, Queen of Diamonds, Queen of Hearts, 10 of Hearts, Queen of Spades, 6 of Hearts
+5 of Diamonds, Ace of Diamonds, Jack of Spades, 4 of Hearts, 8 of Hearts, 6 of Clubs
+7 of Hearts, Queen of Clubs, Ace of Spades, Ace of Clubs, 2 of Clubs, 3 of Diamonds
+7 of Clubs, King of Hearts, Ace of Hearts, 4 of Diamonds, Jack of Hearts, 8 of Clubs
+5 of Hearts, 3 of Hearts, 3 of Clubs, 7 of Spades, 7 of Diamonds, 10 of Clubs
+
+# Free cells (4 positions) - use "empty" for empty cells
+empty, empty, empty, empty
+
+# Home cells (Clubs, Diamonds, Hearts, Spades) - top card of each pile
+empty
+empty
+empty
+empty
